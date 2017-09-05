@@ -5,7 +5,8 @@ This tool can be used to generate a Markdown File containing the last 7 days of 
 ## Installation 
 
 1. Clone the repo
-2. Build the escript `mix escript.build`
+2. Fetch dependencies `mix deps.get`
+3. Build the escript `mix escript.build`
 
 ### Github Access Token
 
