@@ -4,6 +4,7 @@ defmodule WeeklySummary.Main do
 
   def main(_args) do
     IssueRequester.issues
+    |> IO.inspect
     |> Report.generate
   end
 end
