@@ -43,6 +43,21 @@ By default, the last 7 days of closed Pull Requests will be fetched. This can be
 ./weekly_summary --num-days 30 ORGANIZATION_NAME
 ```
 
+#### Specifying Date Range
+
+You can also specify the `start-date` and `end-date`. Dates are expected to be in the format `YYYYMMDD`. If you only include `start-date` the `end-date` is today.
+
+```bash
+# start date is 2018-01-01
+# end date is today
+./weekly_summary --start-date 20180101 ORGANIZATION_NAME
+
+# start date is 2017-12-25
+# end date is 2017-01-31
+./weekly_summary --start-date 20171225 --end-date 20170131 ORGANIZATION_NAME
+
+```
+
 ### Outputting to Another File
 
 By default, the Weekly Summary is printed to `stdout`. This script is most useful to run and redirect ourput to a file

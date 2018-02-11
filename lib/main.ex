@@ -4,7 +4,8 @@ defmodule WeeklySummary.Main do
   alias WeeklySummary.Report
 
   def main(args) do
-    {parsed, org, _} = OptionParser.parse(args, switches: [num_days: :integer])
+    {parsed, org, _} =
+      OptionParser.parse(args, switches: [num_days: :integer, start_date: :string, end_date: :string])
 
     case length(org) do
       0 -> exit("Organization name required")
