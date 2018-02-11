@@ -26,7 +26,26 @@ export GITHUB_ACCESS_TOKEN="MY_TOKEN"
 GITHUB_ACCESS_TOKEN=MY_TOKEN ./weekly_summary ORGANIZATION_NAME
 ```
 
-This will print the Weekly Summary to `stdout`. This script is most useful to run and redirect ourput to a file
+### Options
+
+#### Number of Days
+
+By default, the last 7 days of closed Pull Requests will be fetched. This can be customized with the `--num-days` argument.
+
+```bash
+# last 7 days
+./weekly_summary ORGANIZATION_NAME
+
+# yesterday
+./weekly_summary --num-days 1 ORGANIZATION_NAME
+
+# last 30 days
+./weekly_summary --num-days 30 ORGANIZATION_NAME
+```
+
+### Outputting to Another File
+
+By default, the Weekly Summary is printed to `stdout`. This script is most useful to run and redirect ourput to a file
 
 ```bash
 ./weekly_summary > this_week.md
