@@ -1,8 +1,8 @@
 defmodule WeeklySummary.IssueRequester do
-  def issues do
+  def issues(organization) do
     client = Tentacat.Client.new(%{access_token: System.get_env("GITHUB_ACCESS_TOKEN")})
 
-    Tentacat.Repositories.list_orgs("roirevolution", client)
+    Tentacat.Repositories.list_orgs(organization, client)
     |> extract_names
     |> Task.async_stream(__MODULE__, :fetch_closed_pull_requests, [client])
     |> Stream.filter(fn({status, _values}) -> status == :ok end)
