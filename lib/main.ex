@@ -1,4 +1,5 @@
 defmodule WeeklySummary.Main do
+  alias WeeklySummary.DateOptionParser
   alias WeeklySummary.IssueRequester
   alias WeeklySummary.Report
 
@@ -9,23 +10,9 @@ defmodule WeeklySummary.Main do
       0 -> exit("Organization name required")
       1 ->
         org
-        |> IssueRequester.issues(calculate_date_range(parsed))
+        |> IssueRequester.issues(DateOptionParser.calculate_date_range(parsed))
         |> Report.generate
       _ -> exit("Only one organization may be specified")
     end
-  end
-
-  defp calculate_date_range([num_days: num_days]) do
-    today = Timex.now() |>  Timex.beginning_of_day()
-    start_date = today |> Timex.shift(days: -num_days)
-
-    %{start_date: start_date, end_date: today}
-  end
-
-  defp calculate_date_range([]) do
-    today = Timex.now() |> Timex.beginning_of_day()
-    start_date = today |> Timex.shift(days: -7)
-
-    %{start_date: start_date, end_date: today}
   end
 end
