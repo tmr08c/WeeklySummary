@@ -23,32 +23,34 @@ defmodule WeeklySummary.IssueRequester do
     { repo.name, get_recently_closed(repo, client, dates) }
   end
 
-  def get_recently_closed(%{owner: owner, name: name}, client, %{start_date: start_date, end_date: end_date}) do
-    # `since` deals with `updated_at`
-    # This could result in returning isses that were updated recently
-    # but were closed earlier
-    #
-    # As a result we need to also check the returned issues for `closed_at`
-    #
-    # If the `pull_request` key exists that means the issue is a PR
-    # this can result in duplicates where we have the issue and the PR for the issue
-    # Going to make sure it's a PR since that means code exists to do a thing
-    #
+  def get_recently_closed(%{owner: owner, name: name}, client, dates = %{start_date: start_date, end_date: end_date}) do
     Tentacat.Issues.filter(owner, name, %{state: "closed", since: format_date(start_date)}, client)
     |> Stream.filter(&pull_request?/1)
-    |> Stream.filter(&(closed_in_range?(&1, end_date)))
+    |> Stream.filter(&(closed_in_range?(&1, dates)))
     |> Stream.map(fn(issue) -> issue["title"] end)
     |> Enum.to_list
   end
 
+  @doc """
+  Checks the `Issue` response for the existence of the `pull_request` key. This
+  indicates that the `Issue` is actually a `Pull Request` .
+  """
   def pull_request?(issue) do
     issue["pull_request"]
   end
 
-  def closed_in_range?(issue, end_date) do
+  @doc """
+  The GutHub API allows you to filter on `since` which deals with `updated_at`.
+  This can result in returning isses that were updated (e.g., a comment was added,
+  the branch was removed) recently but were closed earlier.
+
+  As a result we need to also check the returned issues for `closed_at` to see when the issue
+  was actually closed, rather than it was most recently updated.
+  """
+  def closed_in_range?(issue, %{start_date: start_date, end_date: end_date}) do
     {:ok, closed_at} = Timex.parse(issue["closed_at"], @github_datetime_format)
 
-    Timex.before?(closed_at, end_date)
+    Timex.between?(closed_at, start_date, end_date)
   end
 
   defp format_date(date) do
